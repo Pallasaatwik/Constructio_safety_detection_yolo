@@ -34,7 +34,8 @@ Construction sites present various safety hazards, and ensuring that workers wea
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/Ansarimajid/Construction-PPE-Detection.git
+    
+    git clone https://github.com/Pallasaatwik/Constructio_safety_detection_yolo.git
     cd Construction-PPE-Detection
     ```
 
@@ -57,7 +58,7 @@ Construction sites present various safety hazards, and ensuring that workers wea
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/Ansarimajid/Construction-PPE-Detection.git
+    git clone https://github.com/Pallasaatwik/Constructio_safety_detection_yolo.git
     cd Construction-PPE-Detection
     ```
 
