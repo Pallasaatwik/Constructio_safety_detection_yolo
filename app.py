@@ -113,7 +113,97 @@ def upload_image():
     img_io = BytesIO()
     img_pil.save(img_io, 'JPEG')
     img_io.seek(0)
+    
 
     return send_file(img_io, mimetype='image/jpeg')
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+# from flask import Flask, request, jsonify, send_file
+# from io import BytesIO
+# import cv2
+# import numpy as np
+# import mimetypes
+# from ultralytics import YOLO
+# from PIL import Image
+
+# app = Flask(__name__)
+
+# # Load YOLO model (replace with your custom model path)
+# model = YOLO("Model/ppe.pt")  
+
+# # Allowed image formats for YOLO processing
+# IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".gif", ".tiff"}
+
+# # Function to draw bounding boxes and labels
+# def draw_bounding_boxes(image, results):
+#     colors = [
+#         (255, 0, 0),  # Hardhat (Blue)
+#         (0, 255, 0),  # Mask (Green)
+#         (0, 0, 255),  # NO-Hardhat (Red)
+#         (255, 255, 0),  # NO-Mask (Cyan)
+#         (255, 0, 255),  # NO-Safety Vest (Magenta)
+#         (0, 255, 255),  # Person (Yellow)
+#     ]
+
+#     for result in results:
+#         for box in result.boxes:
+#             x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
+#             confidence = box.conf[0]  # Confidence score
+#             cls = int(box.cls[0])  # Class ID
+#             label = f"{model.names[cls]} ({confidence:.2f})"
+#             color = colors[cls % len(colors)]  # Pick color for bounding box
+
+#             cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
+#             text_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
+#             cv2.rectangle(image, (x1, y1 - text_size[1] - 10), (x1 + text_size[0] + 4, y1), color, -1)
+#             cv2.putText(image, label, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
+#     return image
+
+# @app.route('/upload', methods=['POST'])
+# def upload_file():
+#     if 'file' not in request.files:
+#         return jsonify({"error": "No file part"}), 400
+    
+#     file = request.files['file']
+
+#     if file.filename == '':
+#         return jsonify({"error": "No selected file"}), 400
+    
+#     file_extension = "." + file.filename.split('.')[-1].lower()
+#     mime_type, _ = mimetypes.guess_type(file.filename)
+
+#     # If it's an image, process it with YOLO
+#     if file_extension in IMAGE_EXTENSIONS:
+#         try:
+#             img = Image.open(file.stream)
+#             img = img.convert("RGB")  # Convert to RGB
+#             img = np.array(img)
+#             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+#             results = model(img)
+
+#             if len(results) == 0 or len(results[0].boxes) == 0:
+#                 return jsonify({"error": "No objects detected"}), 400
+            
+#             img = draw_bounding_boxes(img, results)
+
+#             # Convert back to PIL format
+#             img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+#             img_io = BytesIO()
+#             img_pil.save(img_io, 'JPEG')
+#             img_io.seek(0)
+
+#             return send_file(img_io, mimetype='image/jpeg')
+
+#         except Exception as e:
+#             return jsonify({"error": f"Failed to process image: {str(e)}"}), 500
+
+#     # If it's a non-image file, just return it without modification
+#     else:
+#         return send_file(file.stream, mimetype=mime_type or "application/octet-stream")
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
